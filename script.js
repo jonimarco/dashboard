@@ -1,5 +1,5 @@
 // Ganti dengan URL Apps Script Anda
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygYfVSxfC3eokr6KdqsLix7Tz8sdLRAMfLaCRu9yEL5fRSKqRDs_HbKElfLx13e_ZDVg/exec';
 
 document.getElementById('dataForm').addEventListener('submit', function(e) {
     e.preventDefault();
