@@ -2,7 +2,7 @@ const AUTH_USER = 'admin';
 const AUTH_PASS = 'menteng123';
 const STORAGE_KEY = 'mentengjaya_rooms';
 const HISTORY_KEY = 'mentengjaya_history';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvYZErZuBFrZMPmEHW_XSUNzS4rubSBDDbDL5ijCTq_uFgdaREZ3-QLppoAw7j9Dd9fA/exec';
 
 const state = {
     rooms: [],
