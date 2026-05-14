@@ -3,25 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simpan Data ke Drive</title>
+    <title>Guest House Menteng Jaya</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Simpan Data ke Google Drive</h1>
-        <form id="dataForm">
-            <label for="name">Nama:</label>
-            <input type="text" id="name" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
-            
-            <label for="message">Pesan:</label>
-            <textarea id="message" required></textarea>
-            
-            <button type="submit">Simpan</button>
-        </form>
-        <div id="response"></div>
+    <div class="app-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Guest House & Kolam Renang</p>
+                <h1>Menteng Jaya</h1>
+                <p class="hero-subtitle">Kelola reservasi kamar dan laporan keuangan dengan mudah.</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <section id="loginPage" class="page active">
+                <div class="card auth-card">
+                    <h2>Login Admin</h2>
+                    <p>Masuk untuk mengelola kamar dan tamu.</p>
+                    <form id="loginForm">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="admin" required>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="masukkan password" required>
+                        <button type="submit" class="btn-primary">Masuk</button>
+                        <p class="note">Username: <strong>admin</strong> | Password: <strong>menteng123</strong></p>
+                        <div id="loginError" class="form-message"></div>
+                    </form>
+                </div>
+            </section>
+            <section id="dashboardPage" class="page hidden">
+                <div class="dashboard-header">
+                    <div>
+                        <p class="eyebrow">Dashboard</p>
+                        <h2>Guest House Menteng Jaya</h2>
+                        <p id="userGreeting">Selamat datang, Admin.</p>
+                    </div>
+                    <button id="logoutBtn" class="btn-secondary">Logout</button>
+                </div>
+                <nav class="menu-tabs">
+                    <button class="tab-btn active" data-target="dashboardHome">Ringkasan</button>
+                    <button class="tab-btn" data-target="checkinPage">Check In</button>
+                    <button class="tab-btn" data-target="checkoutPage">Check Out</button>
+                    <button class="tab-btn" data-target="reportPage">Laporan</button>
+                </nav>
+                <section id="dashboardHome" class="tab-panel active">
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <h3>Kamar Terisi</h3>
+                            <p id="occupiedCount">0</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Kamar Kosong</h3>
+                            <p id="emptyCount">20</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Total Pendapatan</h3>
+                            <p id="totalRevenue">Rp 0</p>
+                        </div>
+                    </div>
+                    <div class="status-list">
+                        <div class="list-card">
+                            <h4>Ruangan Terisi</h4>
+                            <table id="occupiedTable">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tamu</th>
+                                        <th>Check In</th>
+                                        <th>Estimasi Check Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="list-card">
+                            <h4>Ruangan Kosong</h4>
+                            <div id="emptyRooms" class="room-pill-list"></div>
+                        </div>
+                    </div>
+                </section>
+                <section id="checkinPage" class="tab-panel hidden">
+                    <div class="panel-grid">
+                        <div class="list-card">
+                            <h4>Kamar Tersedia</h4>
+                            <div id="checkinEmptyRooms" class="room-pill-list"></div>
+                        </div>
+                        <div class="card form-card">
+                            <h3>Form Check In</h3>
+                            <form id="checkinForm">
+                                <label for="roomSelect">Pilih Kamar</label>
+                                <select id="roomSelect" required></select>
+                                <label for="guestName">Nama Tamu</label>
+                                <input type="text" id="guestName" required>
+                                <label for="guestPhone">No Handphone</label>
+                                <input type="tel" id="guestPhone" required>
+                                <label for="checkinDate">Tgl Check In</label>
+                                <input type="date" id="checkinDate" required>
+                                <label for="stayLength">Lama Menginap (malam)</label>
+                                <input type="number" id="stayLength" min="1" value="1" required>
+                                <label for="chargeRate">Charge / Malam (Rp)</label>
+                                <input type="number" id="chargeRate" min="0" value="250000" required>
+                                <label for="extraCharge">Charge Tamu (Rp)</label>
+                                <input type="number" id="extraCharge" min="0" value="0" required>
+                                <div class="calc-line">
+                                    <span>Jumlah Pembayaran:</span>
+                                    <strong id="totalPayment">Rp 250.000</strong>
+                                </div>
+                                <button type="submit" class="btn-primary">Check In</button>
+                                <div id="checkinMessage" class="form-message"></div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                <section id="checkoutPage" class="tab-panel hidden">
+                    <div class="list-card">
+                        <h4>Daftar Kamar Terisi</h4>
+                        <table id="checkoutTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tamu</th>
+                                    <th>Check In</th>
+                                    <th>Estimasi Check Out</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+                <section id="reportPage" class="tab-panel hidden">
+                    <div class="report-card">
+                        <h3>Laporan Keuangan</h3>
+                        <p>Rekap semua transaksi check out tamu.</p>
+                        <div class="summary-grid report-summary">
+                            <div class="summary-card">
+                                <h4>Total Transaksi</h4>
+                                <p id="totalTransactions">0</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Total Pendapatan</h4>
+                                <p id="reportRevenue">Rp 0</p>
+                            </div>
+                        </div>
+                        <table id="reportTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kamar</th>
+                                    <th>Tamu</th>
+                                    <th>Check In</th>
+                                    <th>Check Out</th>
+                                    <th>Pembayaran</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+        </main>
     </div>
     <script src="script.js"></script>
 </body>
