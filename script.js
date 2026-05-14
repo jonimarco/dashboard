@@ -2,6 +2,7 @@ const AUTH_USER = 'admin';
 const AUTH_PASS = 'menteng123';
 const STORAGE_KEY = 'mentengjaya_rooms';
 const HISTORY_KEY = 'mentengjaya_history';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
 
 const state = {
     rooms: [],
@@ -190,10 +191,32 @@ function handleCheckin(event) {
         checkoutDate
     };
 
+    const payload = {
+        action: 'checkin',
+        room: roomNumber,
+        name: guestName,
+        phone: guestPhone,
+        checkin: checkinDate,
+        checkout: checkoutDate,
+        nights: stayLength,
+        rate: chargeRate,
+        extra: extraCharge,
+        total: totalPayment
+    };
+
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).catch(err => console.error('Error posting to Apps Script:', err));
+
     saveState();
     renderDashboard();
     renderCheckinPage();
-    elements.checkinMessage.textContent = `Check in berhasil di kamar ${roomNumber}.`;
+    elements.checkinMessage.textContent = `Check in berhasil di kamar ${roomNumber}. Data dikirim ke Google Drive.`;
     elements.checkinForm.reset();
     elements.chargeRate.value = 250000;
     elements.extraCharge.value = 0;
@@ -257,11 +280,36 @@ function handleCheckout(roomNumber) {
         return;
     }
 
+    const currentDate = new Date();
+    const checkoutDateFormatted = formatDate(currentDate);
+
+    const payload = {
+        action: 'checkout',
+        room: roomNumber,
+        name: room.guest.name,
+        phone: room.guest.phone,
+        checkin: room.guest.checkinDate,
+        checkout: checkoutDateFormatted,
+        nights: room.guest.stayLength,
+        rate: room.guest.chargeRate,
+        extra: room.guest.extraCharge,
+        total: room.guest.totalPayment
+    };
+
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    }).catch(err => console.error('Error posting to Apps Script:', err));
+
     state.history.unshift({
         roomNumber,
         guestName: room.guest.name,
         checkinDate: room.guest.checkinDate,
-        checkoutDate: room.guest.checkoutDate,
+        checkoutDate: checkoutDateFormatted,
         totalPayment: room.guest.totalPayment
     });
 
