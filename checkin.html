@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check In - Guest House Menteng Jaya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Check In</p>
+                <h1>Guest House Menteng Jaya</h1>
+                <p class="hero-subtitle">Simpan data tamu dan kamar ke sheet checkin.</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Halaman Check In</p>
+                    <h2>Tambah data tamu</h2>
+                </div>
+                <div>
+                    <a href="dashboard.html" class="btn-secondary">Dashboard</a>
+                    <a href="checkout.html" class="btn-secondary" style="margin-left: 12px;">Check Out</a>
+                </div>
+            </div>
+            <div class="card form-card">
+                <h3>Form Check In</h3>
+                <form id="checkinForm">
+                    <label for="guestName">Nama Tamu</label>
+                    <input type="text" id="guestName" required>
+                    <label for="roomSelect">Kamar</label>
+                    <select id="roomSelect" required></select>
+                    <label for="checkinDate">Tanggal Check In</label>
+                    <input type="date" id="checkinDate" required>
+                    <label for="stayLength">Lama Menginap (malam)</label>
+                    <input type="number" id="stayLength" min="1" value="1" required>
+                    <label for="pricePerNight">Harga Kamar / Malam (Rp)</label>
+                    <input type="number" id="pricePerNight" min="0" value="250000" required>
+                    <div class="calc-line">
+                        <span>Total Pembayaran</span>
+                        <strong id="totalPayment">Rp 250.000</strong>
+                    </div>
+                    <button type="submit" class="btn-primary">Simpan Check In</button>
+                    <div id="checkinMessage" class="form-message"></div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="checkin.js"></script>
+</body>
+</html>

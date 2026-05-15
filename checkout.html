@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Out - Guest House Menteng Jaya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Check Out</p>
+                <h1>Guest House Menteng Jaya</h1>
+                <p class="hero-subtitle">Proses checkout tamu dari sheet checkin.</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Halaman Check Out</p>
+                    <h2>Pilih tamu untuk checkout</h2>
+                </div>
+                <div>
+                    <a href="dashboard.html" class="btn-secondary">Dashboard</a>
+                    <a href="checkin.html" class="btn-secondary" style="margin-left: 12px;">Check In</a>
+                </div>
+            </div>
+            <div class="status-list">
+                <div class="list-card">
+                    <h4>Daftar Check In Aktif</h4>
+                    <table id="checkoutTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kamar</th>
+                                <th>Tamu</th>
+                                <th>Check In</th>
+                                <th>Checkout</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card form-card" id="checkoutDetails" style="display:none;">
+                    <h3>Detail Checkout</h3>
+                    <p id="selectedInfo"></p>
+                    <label for="charges">Charges Tambahan (Rp)</label>
+                    <input type="number" id="charges" min="0" value="0">
+                    <div class="calc-line">
+                        <span>Total Bayar</span>
+                        <strong id="checkoutTotal">Rp 0</strong>
+                    </div>
+                    <button id="confirmCheckout" class="btn-primary">Proses Check Out</button>
+                    <div id="checkoutMessage" class="form-message"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="checkout.js"></script>
+</body>
+</html>

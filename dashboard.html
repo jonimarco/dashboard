@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Guest House Menteng Jaya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Dashboard Admin</p>
+                <h1>Guest House Menteng Jaya</h1>
+                <p class="hero-subtitle">Ringkasan dan navigasi check in / check out.</p>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Dashboard</p>
+                    <h2>Panel Admin</h2>
+                    <p id="userGreeting">Selamat datang, Admin.</p>
+                </div>
+                <div>
+                    <a href="checkin.html" class="btn-primary">Check In</a>
+                    <a href="checkout.html" class="btn-primary" style="margin-left: 12px;">Check Out</a>
+                    <a href="index.html" class="btn-secondary" style="margin-left: 12px;">Logout</a>
+                </div>
+            </div>
+            <div id="dashboardMessage" class="form-message"></div>
+            <section id="dashboardHome" class="tab-panel active">
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h3>Kamar Terisi</h3>
+                        <p id="occupiedCount">0</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Kamar Kosong</h3>
+                        <p id="emptyCount">0</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Total Pendapatan</h3>
+                        <p id="totalRevenue">Rp 0</p>
+                    </div>
+                </div>
+                <div class="status-list">
+                    <div class="list-card">
+                        <h4>Ruangan Terisi</h4>
+                        <table id="occupiedTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tamu</th>
+                                    <th>Check In</th>
+                                    <th>Estimasi Check Out</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="list-card">
+                        <h4>Ruangan Kosong</h4>
+                        <div id="emptyRooms" class="room-pill-list"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
