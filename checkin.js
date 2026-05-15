@@ -104,21 +104,63 @@ function handleCheckin(event) {
         return;
     }
 
-    const checkout = formatDate(addDays(new Date(checkin), nights));
-    const payload = {
-        action: 'checkin',
-        room,
-        name,
-        phone: '',
-        checkin,
-        checkout,
-        nights,
-        rate,
-        extra: 0,
-        total
+    // verify room availability just before sending
+    checkinElements.checkinMessage.textContent = 'Memeriksa ketersediaan kamar...';
+    verifyRoomAvailable(room, function (isAvailable) {
+        if (!isAvailable) {
+            checkinElements.checkinMessage.textContent = `Kamar ${room} tidak tersedia untuk check in.`;
+            return;
+        }
+
+        const checkout = formatDate(addDays(new Date(checkin), nights));
+        const payload = {
+            action: 'checkin',
+            room,
+            name,
+            phone: '',
+            checkin,
+            checkout,
+            nights,
+            rate,
+            extra: 0,
+            total
+        };
+
+        sendRequest(payload, 'Data check in berhasil disimpan.');
+    });
+}
+
+function verifyRoomAvailable(roomNumber, callback) {
+    const cbName = `verifyRoomAvailableCb_${Date.now()}`;
+    window[cbName] = function (data) {
+        try {
+            const kamarkosong = (data && data.kamarkosong) || [];
+            const kamarisi = (data && data.kamarisi) || [];
+            let isAvailable = false;
+
+            if (kamarkosong.length > 0) {
+                isAvailable = kamarkosong.some(r => parseInt(r.room, 10) === roomNumber);
+            } else {
+                const occupied = new Set(kamarisi.map(r => parseInt(r.room, 10)).filter(n => !Number.isNaN(n)));
+                isAvailable = !occupied.has(roomNumber);
+            }
+
+            callback(Boolean(isAvailable));
+        } catch (e) {
+            callback(false);
+        } finally {
+            try { delete window[cbName]; } catch (e) { /* ignore */ }
+        }
     };
 
-    sendRequest(payload, 'Data check in berhasil disimpan.');
+    const script = document.createElement('script');
+    script.src = `${APPS_SCRIPT_URL}?action=loadDashboard&callback=${cbName}`;
+    script.onerror = () => {
+        callback(false);
+        try { delete window[cbName]; } catch (e) { }
+    };
+    script.onload = () => setTimeout(() => document.body.removeChild(script), 1000);
+    document.body.appendChild(script);
 }
 
 function sendRequest(payload, successMessage) {
