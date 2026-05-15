@@ -1,4 +1,4 @@
-﻿const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
 
 const checkoutElements = {
     tableBody: document.querySelector('#checkoutTable tbody'),
@@ -84,24 +84,56 @@ function handleCheckoutSubmit(event) {
         checkoutElements.checkoutMessage.textContent = 'Pilih tamu terlebih dahulu sebelum checkout.';
         return;
     }
+    // verify the room is still in checkin sheet before processing checkout
+    checkoutElements.checkoutMessage.textContent = 'Memeriksa status checkin...';
+    verifyRoomCheckedIn(selectedRecord.room, selectedRecord.name, function (exists) {
+        if (!exists) {
+            checkoutElements.checkoutMessage.textContent = `Data check in untuk kamar ${selectedRecord.room} tidak ditemukan.`;
+            return;
+        }
 
-    const charges = parseFloat(checkoutElements.charges.value) || 0;
-    const originalTotal = parseFloat(selectedRecord.total || 0);
-    const newTotal = originalTotal + charges;
-    const payload = {
-        action: 'checkout',
-        room: selectedRecord.room,
-        name: selectedRecord.name,
-        phone: selectedRecord.phone || '',
-        checkin: selectedRecord.checkin,
-        checkout: formatDate(new Date()),
-        nights: selectedRecord.nights,
-        rate: selectedRecord.rate,
-        extra: charges,
-        total: newTotal
+        const charges = parseFloat(checkoutElements.charges.value) || 0;
+        const originalTotal = parseFloat(selectedRecord.total || 0);
+        const newTotal = originalTotal + charges;
+        const payload = {
+            action: 'checkout',
+            room: selectedRecord.room,
+            name: selectedRecord.name,
+            phone: selectedRecord.phone || '',
+            checkin: selectedRecord.checkin,
+            checkout: formatDate(new Date()),
+            nights: selectedRecord.nights,
+            rate: selectedRecord.rate,
+            extra: charges,
+            total: newTotal
+        };
+
+        sendRequest(payload, `Check out tamu ${selectedRecord.name} berhasil diproses.`);
+    });
+}
+
+function verifyRoomCheckedIn(roomNumber, guestName, callback) {
+    const cbName = `verifyRoomCheckedInCb_${Date.now()}`;
+    window[cbName] = function (data) {
+        try {
+            const records = (data && data.checkin) || [];
+            const exists = records.some(r => parseInt(r.room, 10) === parseInt(roomNumber, 10) && (!guestName || (r.name === guestName)));
+            callback(Boolean(exists));
+        } catch (e) {
+            callback(false);
+        } finally {
+            try { delete window[cbName]; } catch (e) { }
+        }
     };
 
-    sendRequest(payload, `Check out tamu ${selectedRecord.name} berhasil diproses.`);
+    const script = document.createElement('script');
+    script.src = `${APPS_SCRIPT_URL}?action=loadCheckin&callback=${cbName}`;
+    script.onerror = () => {
+        callback(false);
+        try { delete window[cbName]; } catch (e) { }
+    };
+    script.onload = () => setTimeout(() => document.body.removeChild(script), 1000);
+    document.body.appendChild(script);
 }
 
 function sendRequest(payload, successMessage) {
