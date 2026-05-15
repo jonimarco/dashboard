@@ -1,4 +1,4 @@
-﻿const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby76namOrMtVUcD1iQhB888RoVBfeIYbUVvhRsQr-fckIsNFse9KNbdaqjcxaaD7UdZpw/exec';
 
 const checkinElements = {
     roomSelect: document.getElementById('roomSelect'),
@@ -25,14 +25,21 @@ function initCheckinPage() {
 }
 
 function loadRoomOptions() {
+    checkinElements.roomSelect.disabled = true;
+    checkinElements.roomSelect.innerHTML = '<option value="">Memuat kamar...</option>';
+
     const callbackName = 'loadRoomOptionsCallback';
     window[callbackName] = function (data) {
         const rooms = (data && data.kamarkosong) || [];
         if (!rooms.length) {
             checkinElements.roomSelect.innerHTML = '<option value="">Tidak ada kamar tersedia</option>';
+            checkinElements.roomSelect.disabled = false;
             return;
         }
-        checkinElements.roomSelect.innerHTML = rooms.map(room => `<option value="${room.room}">Kamar ${room.room}</option>`).join('');
+        checkinElements.roomSelect.innerHTML = ['<option value="" disabled selected>Pilih kamar</option>']
+            .concat(rooms.map(room => `<option value="${room.room}">Kamar ${room.room}</option>`))
+            .join('');
+        checkinElements.roomSelect.disabled = false;
     };
 
     const url = `${APPS_SCRIPT_URL}?action=loadDashboard&callback=${callbackName}`;
@@ -40,6 +47,8 @@ function loadRoomOptions() {
     script.src = url;
     script.onerror = () => {
         checkinElements.checkinMessage.textContent = 'Gagal memuat daftar kamar kosong dari Google Sheets.';
+        checkinElements.roomSelect.disabled = false;
+        checkinElements.roomSelect.innerHTML = '<option value="">Tidak dapat memuat kamar</option>';
     };
     script.onload = () => setTimeout(() => document.body.removeChild(script), 1000);
     document.body.appendChild(script);
@@ -55,14 +64,15 @@ function updateTotal() {
 function handleCheckin(event) {
     event.preventDefault();
 
-    const room = parseInt(checkinElements.roomSelect.value, 10);
+    const roomValue = checkinElements.roomSelect.value;
+    const room = roomValue ? parseInt(roomValue, 10) : null;
     const name = checkinElements.guestName.value.trim();
     const checkin = checkinElements.checkinDate.value;
     const nights = parseInt(checkinElements.stayLength.value, 10);
     const rate = parseFloat(checkinElements.pricePerNight.value);
     const total = nights * rate;
 
-    if (!room || !name || !checkin || nights < 1 || rate <= 0) {
+    if (!roomValue || !room || !name || !checkin || nights < 1 || rate <= 0) {
         checkinElements.checkinMessage.textContent = 'Lengkapi semua data check in dengan benar.';
         return;
     }
