@@ -25,19 +25,35 @@ function initCheckinPage() {
 }
 
 function loadRoomOptions() {
+    // disable while loading
     checkinElements.roomSelect.disabled = true;
     checkinElements.roomSelect.innerHTML = '<option value="">Memuat kamar...</option>';
 
     const callbackName = 'loadRoomOptionsCallback';
     window[callbackName] = function (data) {
-        const rooms = (data && data.kamarkosong) || [];
-        if (!rooms.length) {
+        const kamarkosong = (data && data.kamarkosong) || [];
+        const kamarisi = (data && data.kamarisi) || [];
+
+        let available = [];
+
+        if (kamarkosong.length > 0) {
+            available = kamarkosong.map(r => parseInt(r.room, 10)).filter(n => !Number.isNaN(n));
+        } else {
+            // fallback: build rooms 1..20 minus occupied rooms from `kamarisi`
+            const occupied = new Set(kamarisi.map(r => parseInt(r.room, 10)).filter(n => !Number.isNaN(n)));
+            for (let i = 1; i <= 20; i += 1) {
+                if (!occupied.has(i)) available.push(i);
+            }
+        }
+
+        if (!available.length) {
             checkinElements.roomSelect.innerHTML = '<option value="">Tidak ada kamar tersedia</option>';
             checkinElements.roomSelect.disabled = false;
             return;
         }
+
         checkinElements.roomSelect.innerHTML = ['<option value="" disabled selected>Pilih kamar</option>']
-            .concat(rooms.map(room => `<option value="${room.room}">Kamar ${room.room}</option>`))
+            .concat(available.map(n => `<option value="${n}">Kamar ${n}</option>`))
             .join('');
         checkinElements.roomSelect.disabled = false;
     };
@@ -47,11 +63,22 @@ function loadRoomOptions() {
     script.src = url;
     script.onerror = () => {
         checkinElements.checkinMessage.textContent = 'Gagal memuat daftar kamar kosong dari Google Sheets.';
+        // fallback to generate rooms 1..20 (all available)
+        const opts = ['<option value="" disabled selected>Pilih kamar</option>'];
+        for (let i = 1; i <= 20; i += 1) opts.push(`<option value="${i}">Kamar ${i}</option>`);
+        checkinElements.roomSelect.innerHTML = opts.join('');
         checkinElements.roomSelect.disabled = false;
-        checkinElements.roomSelect.innerHTML = '<option value="">Tidak dapat memuat kamar</option>';
     };
     script.onload = () => setTimeout(() => document.body.removeChild(script), 1000);
     document.body.appendChild(script);
+
+    // If user clicks the select before data loaded, ensure options refresh
+    checkinElements.roomSelect.addEventListener('click', () => {
+        // if only placeholder present, try reloading
+        if (checkinElements.roomSelect.options.length <= 1) {
+            loadRoomOptions();
+        }
+    }, { once: true });
 }
 
 function updateTotal() {
