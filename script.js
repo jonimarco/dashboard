@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvYZErZuBFrZMPmEHW_XSUNzS4rubSBDDbDL5ijCTq_uFgdaREZ3-QLppoAw7j9Dd9fA/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEoAXjiLpsFdY1sBUC_xpC3CFRuxaVmsmzBauoDkOGnaGTzVmb-3a3gAVz9GUwY0hyNg/exec';
 
 const elements = {
     dashboardMessage: document.getElementById('dashboardMessage'),
